@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a0f2e">
+<title>LUNA — Divination &amp; Curiosities</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<noscript>
+  <div style="font-family:Georgia,serif;color:#f0e6d4;background:#1a0f2e;padding:24px;text-align:center;">
+    LUNA needs JavaScript to open its doors. Please enable it.
+  </div>
+</noscript>
+
+<div id="app">
+
+  <!-- 右上角语言切换（小字，常驻所有页面） -->
+  <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
+    <button type="button" id="lang-en" data-lang="en">EN</button>
+    <span class="sep" aria-hidden="true">·</span>
+    <button type="button" id="lang-zh" data-lang="zh">中文</button>
+  </div>
+
+  <!-- 全局星空背景（首页 / 门廊 / 物件页共用） -->
+  <canvas id="bg" width="640" height="360" aria-hidden="true"></canvas>
+
+  <main id="views">
+
+    <!-- ══ PAGE 1 · 魔法入口 ══ -->
+    <section class="screen" id="screen-entrance">
+      <canvas id="front" width="640" height="360" aria-hidden="true"></canvas>
+    </section>
+
+    <!-- ══ PAGE 2 · 五扇门 ══ -->
+    <section class="screen hidden" id="screen-doors">
+      <div class="doors-frame">
+        <span class="frame-corner tl" aria-hidden="true">✦</span>
+        <span class="frame-corner tr" aria-hidden="true">✦</span>
+        <span class="frame-corner bl" aria-hidden="true">✦</span>
+        <span class="frame-corner br" aria-hidden="true">✦</span>
+        <span class="tw" style="left:11%;top:15%" aria-hidden="true">✦</span>
+        <span class="tw" style="left:85%;top:20%;animation-delay:.9s" aria-hidden="true">☾</span>
+        <span class="tw" style="left:20%;top:76%;animation-delay:1.6s" aria-hidden="true">✦</span>
+        <span class="tw" style="left:80%;top:66%;animation-delay:.4s" aria-hidden="true">✦</span>
+        <div class="doors-head">
+          <p class="doors-sign" aria-hidden="true">✦&nbsp;&nbsp;☾&nbsp;&nbsp;✦</p>
+          <p class="doors-line" data-i18n="hint">Which door calls to you?</p>
+        </div>
+        <div class="doors" id="doors">
+          <div class="door-row" id="door-row-top"></div>
+          <div class="door-row bottom" id="door-row-bottom"></div>
+        </div>
+
+        <!-- 黑猫彩蛋：住在门廊右下角的小住客（不是第六扇门） -->
+        <div class="cat-egg" id="cat-egg">
+          <canvas id="cat-canvas" width="26" height="24"></canvas>
+          <div class="cat-bubble hidden" id="cat-bubble" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PAGE 3 · 魔法物件（同一套布局模板） ══ -->
+    <section class="screen hidden" id="screen-object">
+      <div class="obj-wrap">
+        <p class="obj-dec" aria-hidden="true"><span>✦</span><span>☾</span><span>✦</span></p>
+        <div class="obj-stage">
+          <div class="obj-canvas-holder" id="obj-canvas-holder">
+            <canvas id="obj-canvas" width="0" height="0"></canvas>
+            <div class="obj-mirror-txt hidden" id="obj-mirror-txt"></div>
+          </div>
+        </div>
+        <h1 class="obj-title" id="obj-title"></h1>
+        <p class="obj-desc" id="obj-desc"></p>
+        <div class="obj-interact" id="obj-interact"></div>
+        <div class="obj-result" id="obj-result"></div>
+        <button class="obj-back" id="obj-back" type="button" data-i18n="back">← BACK</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 转场黑幕 -->
+  <div class="fade hidden" id="fade" aria-hidden="true"></div>
+  <div id="toast" class="hidden" role="status"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
