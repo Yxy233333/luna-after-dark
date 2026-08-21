@@ -1,0 +1,560 @@
+/* ============================================================
+   LUNA — Divination & Curiosities
+   粉紫黑复古哥特像素风
+   Deep Plum × Dusty Lavender × Muted Pink × Dusty Rose
+   × Cream × Charcoal Black × Antique Gold
+   硬阴影、像素边框、steps() 低帧动画（最多 5 种简单动画）
+   ============================================================ */
+
+:root {
+  --ink: #0b0612;
+  --charcoal: #120c1c;
+  --plum-deep: #1a0f2e;
+  --plum: #241636;
+  --plum-mid: #2e1d42;
+  --lavender: #b9a7c9;
+  --lavender-dim: #7d6a94;
+  --pink: #c89ab0;
+  --rose: #a06a7a;
+  --rose-dark: #7a4a5a;
+  --cream: #f0e6d4;
+  --paper: #f6ecd9;
+  --gold: #c8a878;
+  --gold-dark: #8a6a44;
+  --font-title: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  --font-body: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  background: #191725;
+  color: var(--cream);
+  overflow-y: auto;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+.hidden { display: none !important; }
+
+/* ---------- 布局 ---------- */
+#app { position: relative; min-height: 100vh; min-height: 100dvh; }
+#views { position: relative; z-index: 1; }
+
+/* ---------- 右上角语言切换（小字，无框） ---------- */
+.lang-switch {
+  position: fixed; top: 12px; right: 14px; z-index: 60;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; letter-spacing: 0.06em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+}
+.lang-switch button {
+  font-family: var(--font-body);
+  font-size: 13px; letter-spacing: 0.06em;
+  color: rgba(240, 230, 212, 0.55);
+  background: none; border: none; padding: 2px 0;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+.lang-switch button:hover { color: rgba(240, 230, 212, 0.92); }
+.lang-switch button.active { color: var(--gold); }
+.lang-switch .sep { color: rgba(240, 230, 212, 0.4); }
+.lang-switch button:focus-visible { outline: 1px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- 屏幕 ---------- */
+.screen {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  animation: screenIn 0.5s steps(5) both;
+}
+.screen.hidden { display: none; }
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   PAGE 1 · LUNA 魔法入口（叠加在全局星空上）
+   ============================================================ */
+#screen-entrance {
+  padding: 0;
+  background: transparent;
+}
+
+#bg {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  z-index: 0;
+  cursor: default;
+}
+
+#front {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ============================================================
+   PAGE 2 · 五扇门（平面正视角的神秘门廊）
+   ============================================================ */
+#screen-doors {
+  background: transparent;   /* 全局星空背景透出 */
+  align-items: center;
+  justify-content: center;
+  padding: 70px 16px 44px;
+}
+
+/* 古董双线画框 */
+.doors-frame {
+  position: relative;
+  width: min(980px, 100%);
+  border: 2px solid var(--gold-dark);
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 5px;
+  padding: 38px 22px 34px;
+}
+.frame-corner {
+  position: absolute;
+  color: var(--gold);
+  font-size: 16px;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(200, 168, 120, 0.5);
+}
+.frame-corner.tl { top: -8px; left: -8px; }
+.frame-corner.tr { top: -8px; right: -8px; }
+.frame-corner.bl { bottom: -8px; left: -8px; }
+.frame-corner.br { bottom: -8px; right: -8px; }
+
+/* 少量闪烁星星 */
+.tw {
+  position: absolute;
+  color: var(--lavender);
+  font-size: 12px;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(185, 167, 201, 0.6);
+  animation: twinkle 2.8s steps(3) infinite alternate;
+  pointer-events: none;
+}
+@keyframes twinkle {
+  from { opacity: 0.25; }
+  to   { opacity: 1; }
+}
+
+.doors-head { text-align: center; margin-bottom: 28px; }
+.doors-sign {
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 1.1em;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+}
+.doors-line {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 3vw, 17px);
+  font-style: italic;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  color: var(--lavender);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.door-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(12px, 3.4vw, 34px);
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+.door-row.bottom { margin-top: 18px; }
+
+.door {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--cream);
+  font-family: var(--font-body);
+  user-select: none;
+  touch-action: manipulation;
+}
+.door-art { display: block; line-height: 0; }
+.door-art canvas {
+  transition: filter 0.25s steps(4);
+}
+.door:hover .door-art canvas,
+.door:focus-visible .door-art canvas {
+  filter: brightness(1.28) drop-shadow(0 0 8px var(--glow, #b9a7c9));
+}
+.door:active .door-art canvas { filter: brightness(0.9); }
+.door-name {
+  font-size: clamp(12px, 2.7vw, 16px);
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 172px;
+  color: rgba(240, 230, 212, 0.6);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  transition: color 0.25s;
+}
+.door:hover .door-name,
+.door:focus-visible .door-name { color: var(--gold); }
+.door:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
+
+/* ---------- 黑猫彩蛋（右下角，无标签无边框的隐藏住客） ---------- */
+.cat-egg {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  z-index: 6;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+.cat-egg canvas {
+  display: block;
+  width: 104px;
+  height: 96px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter:
+    drop-shadow(0 0 5px rgba(138, 128, 176, 0.55))
+    drop-shadow(0 0 14px rgba(138, 128, 176, 0.30));
+}
+.cat-bubble {
+  position: absolute;
+  right: 16px;
+  bottom: 118px;
+  max-width: 300px;
+  background: #241f34;
+  border: 2px solid #766c91;
+  box-shadow: inset 0 0 0 1px #17151d, 0 3px 0 rgba(0, 0, 0, 0.5);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 7;
+  animation: catBubbleIn 0.3s steps(4) both;
+}
+.cat-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  right: 56px;
+  width: 8px;
+  height: 8px;
+  background: #241f34;
+  border-right: 2px solid #766c91;
+  border-bottom: 2px solid #766c91;
+  transform: rotate(45deg);
+}
+@keyframes catBubbleIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   PAGE 3 · 魔法物件（每页一个视觉主角）
+   ============================================================ */
+#screen-object {
+  background: transparent;   /* 全局星空背景透出 */
+  align-items: center;
+  justify-content: center;   /* 内容垂直居中，不留空 */
+  padding: 76px 16px 46px;
+}
+
+.obj-wrap {
+  width: min(560px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.obj-dec {
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 0.9em;
+  margin-bottom: 22px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+}
+.obj-dec span { margin: 0 7px; }
+
+.obj-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.obj-canvas-holder {
+  position: relative;
+  display: inline-block;
+  animation: floaty 3.2s steps(6) infinite alternate;
+}
+@keyframes floaty {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-4px); }
+}
+#obj-canvas { display: block; }
+
+/* 魔镜镜面里的话（覆盖在镜面区域上） */
+.obj-mirror-txt {
+  position: absolute;
+  left: 40px; top: 44px;
+  width: 88px; height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  text-shadow: 0 0 6px rgba(185, 167, 201, 0.85), 0 1px 0 rgba(0, 0, 0, 0.9);
+  padding: 5px;
+  animation: mirrorIn 0.5s steps(6) both;
+}
+@keyframes mirrorIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.obj-title {
+  font-family: var(--font-title);
+  font-size: clamp(30px, 7vw, 44px);
+  font-weight: normal;
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  text-shadow: 0 3px 0 var(--plum-deep);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+.obj-desc {
+  font-size: clamp(17px, 4.2vw, 22px);
+  font-style: italic;
+  line-height: 1.9;
+  color: var(--lavender);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+  margin-bottom: 24px;
+}
+.obj-desc span { display: block; }
+
+.obj-interact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+.obj-result { width: 100%; margin-top: 18px; }
+
+/* ---------- 像素按钮 ---------- */
+.pbtn {
+  font-family: var(--font-title);
+  font-size: 17px;
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  background: linear-gradient(#3a2448, #2a1a36);
+  border: 3px solid var(--charcoal);
+  box-shadow:
+    0 5px 0 rgba(11, 6, 18, 0.9),
+    inset 0 0 0 2px rgba(200, 168, 120, 0.35),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+  padding: 14px 30px;
+  min-height: 54px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: none;
+}
+.pbtn:hover {
+  background: linear-gradient(#452c56, #332046);
+  box-shadow:
+    0 5px 0 rgba(11, 6, 18, 0.9),
+    inset 0 0 0 2px rgba(200, 168, 120, 0.6),
+    0 0 14px rgba(185, 167, 201, 0.28);
+}
+.pbtn:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 1px 0 rgba(11, 6, 18, 0.9),
+    inset 0 0 0 2px rgba(200, 168, 120, 0.35);
+}
+.pbtn:disabled { opacity: 0.55; cursor: wait; transform: none; }
+.pbtn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- 魔药需求选项 ---------- */
+.need-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 440px;
+}
+.need-chip {
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--lavender);
+  background: rgba(46, 29, 66, 0.55);
+  border: 2px solid var(--gold-dark);
+  padding: 8px 15px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+.need-chip:hover { color: var(--cream); }
+.need-chip.sel {
+  color: var(--cream);
+  background: var(--rose-dark);
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(160, 106, 122, 0.55);
+}
+.need-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- 输入框 ---------- */
+.field {
+  width: 100%;
+  max-width: 420px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--cream);
+  background: rgba(18, 12, 28, 0.75);
+  border: 3px solid var(--charcoal);
+  box-shadow: inset 0 0 0 2px rgba(200, 168, 120, 0.25);
+  padding: 10px 12px;
+  resize: vertical;
+}
+.field::placeholder { color: rgba(185, 167, 201, 0.55); }
+.field:focus-visible { outline: 3px solid var(--gold-dark); outline-offset: 2px; }
+
+/* ---------- 结果卡 ---------- */
+.read {
+  font-size: 18.5px;
+  line-height: 1.85;
+  color: var(--plum-deep);
+  background: var(--paper);
+  border: 3px solid var(--charcoal);
+  box-shadow:
+    inset 0 0 0 2px #e8d8c0,
+    4px 4px 0 rgba(11, 6, 18, 0.5);
+  padding: 14px 16px;
+  max-width: 440px;
+  margin: 0 auto;
+  animation: unfold 0.45s steps(6) both;
+}
+.read b {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  color: var(--rose-dark);
+}
+@keyframes unfold {
+  from { opacity: 0; transform: translateY(6px) scaleY(0.86); }
+  to   { opacity: 1; transform: none; }
+}
+
+.potion-tags {
+  margin-top: 10px;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--rose-dark);
+}
+.burn-note {
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(185, 167, 201, 0.8);
+  min-height: 1.6em;
+}
+
+/* ---------- 返回 ---------- */
+.obj-back {
+  margin-top: 28px;
+  background: none;
+  border: none;
+  color: rgba(240, 230, 212, 0.6);
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-style: italic;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  touch-action: manipulation;
+}
+.obj-back:hover { color: var(--gold); }
+.obj-back:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* ---------- 转场黑幕 ---------- */
+.fade {
+  position: fixed; inset: 0; z-index: 70;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s steps(5);
+}
+.fade.show { opacity: 1; pointer-events: auto; }
+
+/* ---------- toast ---------- */
+#toast {
+  position: fixed; left: 50%; bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 80;
+  max-width: 88vw;
+  background: rgba(18, 10, 22, 0.95);
+  color: var(--cream);
+  border: 3px solid var(--gold-dark);
+  box-shadow: inset 0 0 0 2px #1a0e22, 0 5px 0 rgba(0, 0, 0, 0.4);
+  padding: 10px 18px;
+  font-size: 15px;
+  font-style: italic;
+  text-align: center;
+}
+#toast.hidden { display: none; }
+
+/* ---------- 手机适配 ---------- */
+@media (max-width: 560px) {
+  #screen-doors { padding: 64px 12px 40px; }
+  .doors-frame { padding: 30px 14px 26px; }
+  .doors-head { margin-bottom: 20px; }
+  .door-row { gap: 12px; margin-top: 18px; }
+  .door-row.bottom { margin-top: 12px; }
+  .door-name { font-size: 12px; letter-spacing: 0.12em; }
+  .cat-egg { right: 10px; bottom: 8px; }
+  .cat-egg canvas { width: 52px; height: 48px; }
+  .cat-bubble { right: 8px; bottom: 62px; max-width: 240px; font-size: 14px; }
+  .cat-bubble::after { right: 30px; }
+  #screen-object { padding: 66px 14px 40px; }
+  .obj-dec { margin-bottom: 16px; }
+  .obj-stage { margin-bottom: 16px; }
+  .lang-switch { top: 10px; right: 10px; }
+}
+@media (max-height: 640px) {
+  #screen-doors, #screen-object { justify-content: flex-start; }
+  .doors-head { margin-bottom: 18px; }
+}
