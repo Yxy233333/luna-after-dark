@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LUNA — sprite preview</title>
+<style>
+  body{ background:#1a0f2e; font-family:Georgia,serif; padding:24px; color:#f0e6d4; }
+  h2{ letter-spacing:.2em; color:#c8a878; border-bottom:2px solid #7a4a5a; padding-bottom:6px; margin-top:40px; }
+  .row{ display:flex; flex-wrap:wrap; gap:22px; margin:18px 0 10px; }
+  .cell{ background:#241636; border:3px solid #8a6a44; padding:14px; text-align:center; }
+  .cell h3{ margin:0 0 8px; color:#f0e6d4; font-weight:normal; letter-spacing:.1em; font-size:14px; }
+  canvas{ image-rendering:pixelated; image-rendering:crisp-edges; }
+  #street{ width:960px; max-width:92vw; height:auto; border:3px solid #7a4a5a; }
+  .obj{ background:#120c1c; }
+</style>
+</head>
+<body>
+<h2>LUNA — SPRITES</h2>
+<h2>THE CAT (26×24 ×2)</h2>
+<div class="row" id="catrow"></div>
+<h2>THE DOORS (48×64 ×2)</h2>
+<div class="row" id="doors"></div>
+<h2>THE OBJECTS (×2)</h2>
+<div class="row" id="objects"></div>
+<h2>LUNA SHOP FRONT (640×360)</h2>
+<canvas id="street" width="640" height="360"></canvas>
+<script src="../js/sprites.js"></script>
+<script>
+  const KEYS = ['crystal', 'dream', 'burn', 'potion', 'mirror'];
+  const NAMES = { crystal: 'CRYSTAL BALL', dream: 'DREAMCATCHER', burn: 'BURN A WORRY', potion: 'POTION CABINET', mirror: 'MAGIC MIRROR' };
+
+  const crow = document.getElementById('catrow');
+  const cell0 = document.createElement('div');
+  cell0.className = 'cell obj';
+  const h0 = document.createElement('h3');
+  h0.textContent = 'CAT (open)';
+  const b0 = document.createElement('div');
+  b0.appendChild(SPR.up(SPR.makeCat(false), 2));
+  cell0.append(h0, b0);
+  const cell1 = document.createElement('div');
+  cell1.className = 'cell obj';
+  const h1 = document.createElement('h3');
+  h1.textContent = 'CAT (blink)';
+  const b1 = document.createElement('div');
+  b1.appendChild(SPR.up(SPR.makeCat(true), 2));
+  cell1.append(h1, b1);
+  crow.append(cell0, cell1);
+
+  const dg = document.getElementById('doors');
+  KEYS.forEach(k => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    const h = document.createElement('h3');
+    h.textContent = NAMES[k];
+    const box = document.createElement('div');
+    box.appendChild(SPR.up(SPR.makeDoor(k), 2));
+    cell.append(h, box);
+    dg.appendChild(cell);
+  });
+
+  const og = document.getElementById('objects');
+  const states = {
+    crystal: { lit: true },
+    dream: { stars: 3 },
+    burn: { phase: 0 },
+    potion: { color: '#8a7ab8', bubbles: true },
+    mirror: { shown: true }
+  };
+  KEYS.forEach(k => {
+    const cell = document.createElement('div');
+    cell.className = 'cell obj';
+    const h = document.createElement('h3');
+    h.textContent = NAMES[k];
+    const box = document.createElement('div');
+    box.appendChild(SPR.up(SPR.makeObject(k, states[k]), 2));
+    cell.append(h, box);
+    og.appendChild(cell);
+  });
+
+  SPR.paintShopFront(document.getElementById('street').getContext('2d'), 'en');
+</script>
+</body>
+</html>
